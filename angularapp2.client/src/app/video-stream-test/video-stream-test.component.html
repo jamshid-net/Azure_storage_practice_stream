@@ -1,2 +1,4 @@
 
-  <video controls [src]="videoUrl"></video>
+<ng-container *ngFor="let url of videoUrls | async">
+    <video controls [src]="url" (seeked)="seekedHandler($event)"></video>
+</ng-container>

@@ -6,20 +6,25 @@ namespace AngularApp2.Server.Service;
 
 public class BlobService : IBlobService
 {
-    private readonly BlobServiceClient _blobServiceClient;
+    
+
+    private readonly BlobContainerClient _containerClient;
 
     private const string ContainerName = "files";
 
     public BlobService(BlobServiceClient blobServiceClient)
     {
-        _blobServiceClient = blobServiceClient;
+
+        _containerClient = blobServiceClient.GetBlobContainerClient(ContainerName);
+        _containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob)
+                        .ConfigureAwait(true);
     }
 
 
     public async Task<bool> DeleteAsync(Guid fileId, CancellationToken token)
     {
-        BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(ContainerName);
-        BlobClient blobClient = blobContainerClient.GetBlobClient(fileId.ToString());
+       
+        BlobClient blobClient = _containerClient.GetBlobClient(fileId.ToString());
 
         var result =  await blobClient.DeleteAsync();
 
@@ -28,8 +33,8 @@ public class BlobService : IBlobService
 
     public async Task<FileResonse> DownloadAsync(Guid fileId, CancellationToken cancellationToken)
     {
-        BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(ContainerName);
-        BlobClient blobClient = blobContainerClient.GetBlobClient(fileId.ToString());
+        
+        BlobClient blobClient = _containerClient.GetBlobClient(fileId.ToString());
 
         var response = await blobClient.DownloadContentAsync(new BlobDownloadOptions {  }, cancellationToken: cancellationToken);
 
@@ -40,11 +45,25 @@ public class BlobService : IBlobService
     {
         var fileId = Guid.NewGuid();
 
-        BlobContainerClient blobContainerClient = _blobServiceClient.GetBlobContainerClient(ContainerName);
-        BlobClient blobClient = blobContainerClient.GetBlobClient(fileId.ToString());
+      
+        BlobClient blobClient = _containerClient.GetBlobClient(fileId.ToString());
 
         await blobClient.UploadAsync(stream, new BlobHttpHeaders {  ContentType = ContentType },cancellationToken: cancellationToken);
 
         return fileId;  
     }
+
+    public async IAsyncEnumerable<string> GetAllFilesId()
+    {
+       
+        var blobs = _containerClient.GetBlobsAsync();
+
+        await foreach (var blob in blobs)
+        {
+            yield return blob.Name;
+        }
+    }
+
+   
+    
 }
