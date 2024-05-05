@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace AngularApp2.Server.Controllers;
 [ApiController]
-[Route("[controller]")]
+[Route("[controller]/[action]")]
 public class WeatherForecastController : ControllerBase
 {
     private static readonly string[] Summaries = new[]
@@ -19,7 +19,7 @@ public class WeatherForecastController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet(Name = "GetWeatherForecast")]
+    [HttpGet]
     public async IAsyncEnumerable<WeatherForecast> Get([EnumeratorCancellation] CancellationToken token)
     {
         var forecasts = Enumerable.Range(1, 20)
@@ -31,7 +31,7 @@ public class WeatherForecastController : ControllerBase
          });
         foreach (var item in forecasts)
         {
-            
+
             await Task.Delay(1000, token);
             yield return item;
         }

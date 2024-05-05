@@ -29,13 +29,13 @@ export class AppComponent implements OnInit {
   private stopSource = new Subject();
 
   ngOnInit() {
-    this.forecasts$ = this.getForecastStream<WeatherForecast>
-    ('https://localhost:7085/weatherforecast')
-    .pipe(
-      takeUntil(this.stopSource),
-      scan((all, item) => [...all, item], [] as WeatherForecast[]),
-      finalize(() => this.loading = false)
-    );
+    // this.forecasts$ = this.getForecastStream<WeatherForecast>
+    // ('https://localhost:7085/weatherforecast')
+    // .pipe(
+    //   takeUntil(this.stopSource),
+    //   scan((all, item) => [...all, item], [] as WeatherForecast[]),
+    //   finalize(() => this.loading = false)
+    // );
   }
 
  

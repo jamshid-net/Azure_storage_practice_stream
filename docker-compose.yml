@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  angularapp2.server:
+    image: ${DOCKER_REGISTRY-}angularapp2server
+    build:
+      context: .
+      dockerfile: AngularApp2.Server/Dockerfile
+
+  blob-storage: 
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    container_name: blob-storage
+    volumes:
+      - ./.containers/blob_storage/data:/data
+    ports:
+      - "10000:10000"
+    command: "azurite-blob --blobHost 0.0.0.0 -l /data"

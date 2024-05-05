@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "angularapp2.server": "StartDebugging"
+      }
+    }
+  }
+}

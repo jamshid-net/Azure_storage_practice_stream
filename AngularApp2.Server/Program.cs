@@ -1,4 +1,6 @@
 
+using AngularApp2.Server.Service;
+using Azure.Storage.Blobs;
 using System.Buffers;
 
 namespace AngularApp2.Server;
@@ -18,6 +20,10 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+        builder.Services.AddSingleton<IBlobService, BlobService>();
+        builder.Services.AddSingleton(_ => new BlobServiceClient(builder.Configuration.GetConnectionString("blobConnection")));
+
 
         var app = builder.Build();
 
